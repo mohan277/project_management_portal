@@ -1,212 +1,717 @@
 {
-        "swagger": "2.0",
-        "host": "127.0.0.1:8000",
-        "basePath": "/api/project_management_portal/",
-        "info": {
-            "version": "1.0.0",
-            "title": "Simple API",
-            "description": "A simple API to learn how to write OpenAPI Specification"
+    "swagger": "2.0",
+    "host": "localhost:8080",
+    "basePath": "/api/project_management_portal/",
+    "info": {
+        "version": "1.0.0",
+        "title": "Project Management Platform",
+        "description": "A simple API to know the details of projects"
+    },
+    "schemes": [
+        "https",
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "securityDefinitions": {
+        "oauth": {
+            "tokenUrl": "http://auth.ibtspl.com/oauth2/",
+            "flow": "password",
+            "scopes": {
+                "read": "read users",
+                "write": "create users",
+                "update": "update users",
+                "delete": "delete users"
+            },
+            "type": "oauth2"
+        }
+    },
+    "definitions": {
+        "User": {
+            "type": "object",
+            "properties": {
+                "username": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "username"
+            ]
         },
-        "schemes": [
-            "http"
-        ],
-        "consumes": [
-            "application/json"
-        ],
-        "produces": [
-            "application/json"
-        ],
-        "securityDefinitions": {
-            "oauth": {
-                "tokenUrl": "http://auth.ibtspl.com/oauth2/",
-                "flow": "password",
-                "scopes": {
-                    "read": "read users",
-                    "write": "create users",
-                    "update": "update users",
-                    "delete": "delete users"
+        "Project": {
+            "type": "object",
+            "properties": {
+                "project_id": {
+                    "type": "integer",
+                    "format": "int64"
                 },
-                "type": "oauth2"
-            }
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "workflow_type": {
+                    "type": "string"
+                },
+                "project_type": {
+                    "type": "string",
+                    "enum": [
+                        "Classic Software",
+                        "Financial",
+                        "CRM"
+                    ]
+                },
+                "created_by": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "required": [
+                "project_id",
+                "name",
+                "description",
+                "workflow_type",
+                "project_type",
+                "created_by",
+                "created_at"
+            ]
         },
-        "security": [],
-        "definitions": {
-            "TodoId": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer"
+        "Task": {
+            "type": "object",
+            "properties": {
+                "task_id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "project": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "issue_type": {
+                    "type": "string",
+                    "enum": [
+                        "Task",
+                        "Bug",
+                        "Developer story",
+                        "User story",
+                        "Enhancement"
+                    ]
+                }
+            },
+            "required": [
+                "task_id",
+                "title",
+                "description",
+                "project",
+                "state",
+                "issue_type"
+            ]
+        },
+        "Transition": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "transition_id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "from_state": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "from_state_id": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                },
+                "to_state": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "to_state_id": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
                     }
                 }
             },
-            "BasicTodo": {
+            "required": [
+                "name",
+                "description",
+                "from_state",
+                "to_state"
+            ]
+        },
+        "Workflow": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "workflow_id": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "ToState": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "to_state_id": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "Checklist": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "checklist_id": {
+                    "type": "string"
+                },
+                "is_mandatory": {
+                    "type": "boolean"
+                }
+            }
+        }
+    },
+    "parameters": {
+        "UserLoginParameters": {
+            "name": "user_login_details",
+            "in": "body",
+            "description": "user login",
+            "schema": {
                 "type": "object",
                 "properties": {
-                    "description": {
+                    "username": {
                         "type": "string"
                     },
-                    "is_completed": {
-                        "type": "boolean"
-                    },
-                    "remind_at": {
+                    "password": {
                         "type": "string"
                     }
                 },
                 "required": [
-                    "description"
+                    "username",
+                    "password"
                 ]
-            },
-            "Todo": {
-                "allOf": [
-                    {
-                        "$ref": "#/definitions/BasicTodo"
+            }
+        },
+        "CreateProjectParameters": {
+            "name": "Project_Details",
+            "in": "body",
+            "description": "create project",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
                     },
-                    {
-                        "$ref": "#/definitions/TodoId"
+                    "description": {
+                        "type": "string"
+                    },
+                    "workflow_type": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "project_type": {
+                        "type": "string",
+                        "enum": [
+                            "Classic Software",
+                            "Financial",
+                            "CRM"
+                        ]
+                    },
+                    "assigned_to": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
                     }
+                },
+                "required": [
+                    "name",
+                    "description",
+                    "workflow_type",
+                    "project_type"
                 ]
             }
         },
-        "parameters": {
-            "TodoId": {
-                "description": "todo id",
-                "in": "path",
-                "name": "id",
-                "required": true,
-                "type": "integer"
-            },
-            "BasicTodo": {
-                "description": "Todo Parameter",
-                "in": "body",
-                "name": "todo",
-                "required": true,
-                "schema": {
-                    "$ref": "#/definitions/BasicTodo"
+        "CreateTaskParameters": {
+            "name": "Task_Details",
+            "in": "body",
+            "description": "create task",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "project": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "issue_type": {
+                        "type": "string",
+                        "enum": [
+                            "Task",
+                            "Bug",
+                            "Developer story",
+                            "User story",
+                            "Enhancement"
+                        ]
+                    }
+                },
+                "required": [
+                    "title",
+                    "description",
+                    "project",
+                    "issue_type"
+                ]
+            }
+        },
+        "CreateTransitionParameters": {
+            "name": "Transition_Details",
+            "in": "body",
+            "description": "create transition",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "from_state": {
+                        "type": "string"
+                    },
+                    "to_state": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name",
+                    "description",
+                    "from_state",
+                    "to_state"
+                ]
+            }
+        },
+        "TransitionDetailsParameters": {
+            "name": "Transition_Details",
+            "in": "body",
+            "description": "get transition between two states",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "to_state": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                },
+                "required": [
+                    "to_state"
+                ]
+            }
+        },
+        "ProjectIdRequest": {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "description": "id of the project",
+            "type": "integer"
+        },
+        "OffsetParameters": {
+            "name": "offset",
+            "in": "query",
+            "description": "start page",
+            "type": "integer"
+        },
+        "LimitParameters": {
+            "name": "limit",
+            "in": "query",
+            "type": "integer",
+            "description": "end page"
+        },
+        "SortParameters": {
+            "name": "sort",
+            "in": "query",
+            "type": "boolean",
+            "description": "sorting"
+        },
+        "TaskIdRequest": {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "description": "id of the task",
+            "type": "integer"
+        }
+    },
+    "responses": {
+        "UserLoginResponse": {
+            "description": "user logged in successfully",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "is_admin": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "access_token"
+                ]
+            }
+        },
+        "ListOfProjectsResponse": {
+            "description": "projects list",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "projects": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Project"
+                        }
+                    },
+                    "total_projects_count": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
                 }
             }
         },
-        "responses": {
-            "SuccessResponse": {
-                "description": "success response"
+        "CreatedProjectResponse": {
+            "description": "project created successfully",
+            "schema": {
+                "$ref": "#/definitions/Project"
             }
         },
-        "paths": {
-            "/todos/": {
-                "get": {
-                    "summary": "Get all todos",
-                    "description": "Returns a list containing all todos.",
-                    "operationId": "get_todos",
-                    "security": [
-                        {
-                            "oauth": [
-                                "read"
-                            ]
+        "CreatedTaskResponse": {
+            "description": "task created successfully",
+            "schema": {
+                "$ref": "#/definitions/Task"
+            }
+        },
+        "ListOfTasksResponse": {
+            "description": "tasks list",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "tasks": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Task"
                         }
-                    ],
-                    "responses": {
-                        "200": {
-                            "description": "A list of todos",
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/Todo"
-                                }
-                            }
-                        }
-                    }
-                },
-                "post": {
-                    "summary": "create a todo",
-                    "description": "Create a todo",
-                    "operationId": "create_todo",
-                    "security": [
-                        {
-                            "oauth": [
-                                "write"
-                            ]
-                        }
-                    ],
-                    "parameters": [
-                        {
-                            "$ref": "#/parameters/BasicTodo"
-                        }
-                    ],
-                    "responses": {
-                        "200": {
-                            "description": "create a todo",
-                            "schema": {
-                                "$ref": "#/definitions/TodoId"
-                            }
-                        }
+                    },
+                    "total_count_of_tasks": {
+                        "type": "integer",
+                        "format": "int64"
                     }
                 }
-            },
-            "/todos/{id}/": {
-                "parameters": [
-                    {
-                        "$ref": "#/parameters/TodoId"
+            }
+        },
+        "CreatedTransitionResponse": {
+            "description": "transition created successfully",
+            "schema": {
+                "$ref": "#/definitions/Transition"
+            }
+        },
+        "ListOfWorkflowsResponse": {
+            "description": "workflows list",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "workflows": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Workflow"
+                        }
+                    },
+                    "total_count_of_workflows": {
+                        "type": "integer",
+                        "format": "int64"
                     }
-                ],
-                "get": {
-                    "summary": "Get a todo",
-                    "description": "Returns a todo.",
-                    "operationId": "get_todo",
-                    "security": [
-                        {
-                            "oauth": [
-                                "read"
-                            ]
+                }
+            }
+        },
+        "ListOfStatesResponse": {
+            "description": "list of to_states",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "to_states": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/ToState"
                         }
-                    ],
-                    "responses": {
-                        "200": {
-                            "description": "A todo",
-                            "schema": {
-                                "$ref": "#/definitions/Todo"
-                            }
-                        }
+                    },
+                    "total_count_of_to_states": {
+                        "type": "integer",
+                        "format": "int64"
                     }
-                },
-                "put": {
-                    "parameters": [
-                        {
-                            "$ref": "#/parameters/BasicTodo"
-                        }
-                    ],
-                    "summary": "Updates a todo",
-                    "description": "Updates a todo.",
-                    "operationId": "update_todo",
-                    "security": [
-                        {
-                            "oauth": [
-                                "update"
-                            ]
-                        }
-                    ],
-                    "responses": {
-                        "200": {
-                            "$ref": "#/responses/SuccessResponse"
-                        }
-                    }
-                },
-                "delete": {
-                    "summary": "Deletes a todo",
-                    "description": "Deletes a todo.",
-                    "operationId": "delete_todo",
-                    "security": [
-                        {
-                            "oauth": [
-                                "delete"
-                            ]
-                        }
-                    ],
-                    "responses": {
-                        "200": {
-                            "$ref": "#/responses/SuccessResponse"
+                }
+            }
+        },
+        "TransitionDetailsResponse": {
+            "description": "transition details between two states",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "checklists": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Checklist"
+
                         }
                     }
                 }
             }
         }
+    },
+    "paths": {
+        "/login/v1/": {
+            "post": {
+                "operationId": "user_login",
+                "summary": "user login",
+                "description": "login by user",
+                "parameters": [{
+                    "$ref": "#/parameters/UserLoginParameters"
+                }],
+                "responses": {
+                    "200": {
+                        "$ref": "#/responses/UserLoginResponse"
+                    },
+                    "400": {
+                        "description": "user not registered"
+                    },
+                    "401": {
+                        "description": "invalid credentials"
+                    }
+                }
+            }
+        },
+        "/project/v1/": {
+            "post": {
+                "operationId": "create_project",
+                "summary": "project created",
+                "description": "project is created by admin",
+                "security": [{
+                    "oauth": [
+                        "write"
+                    ]
+                }],
+                "parameters": [{
+                    "$ref": "#/parameters/CreateProjectParameters"
+                }],
+                "responses": {
+                    "200": {
+                        "$ref": "#/responses/CreatedProjectResponse"
+                    }
+                }
+            }
+        },
+        "/projects/v1/": {
+            "get": {
+                "operationId": "list_of_projects",
+                "summary": "projects list",
+                "description": "projects list",
+                "security": [{
+                    "oauth": [
+                        "read"
+                    ]
+                }],
+                "parameters": [{
+                        "$ref": "#/parameters/OffsetParameters"
+                    },
+                    {
+                        "$ref": "#/parameters/LimitParameters"
+                    },
+                    {
+                        "$ref": "#/parameters/SortParameters"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/responses/ListOfProjectsResponse"
+                    }
+                }
+            }
+        },
+        "/task/v1/": {
+            "post": {
+                "operationId": "create_task",
+                "summary": "task created",
+                "description": "task is created by user",
+                "security": [{
+                    "oauth": [
+                        "write"
+                    ]
+                }],
+                "parameters": [{
+                    "$ref": "#/parameters/CreateTaskParameters"
+                }],
+                "responses": {
+                    "200": {
+                        "$ref": "#/responses/CreatedTaskResponse"
+                    }
+                }
+            }
+        },
+        "/project/tasks/{project_id}/v1/": {
+            "get": {
+                "operationId": "list_of_tasks",
+                "summary": "tasks list",
+                "description": "tasks list",
+                "security": [{
+                    "oauth": [
+                        "read"
+                    ]
+                }],
+                "parameters": [{
+                    "$ref": "#/parameters/ProjectIdRequest"
+                }],
+                "responses": {
+                    "200": {
+                        "$ref": "#/responses/ListOfTasksResponse"
+                    }
+                }
+            }
+        },
+        "/transition/v1/": {
+            "post": {
+                "operationId": "create_transition",
+                "summary": "transition created",
+                "description": "transition is created between two states",
+                "security": [{
+                    "oauth": [
+                        "write"
+                    ]
+                }],
+                "parameters": [{
+                    "$ref": "#/parameters/CreateTransitionParameters"
+                }],
+                "responses": {
+                    "200": {
+                        "$ref": "#/responses/CreatedTransitionResponse"
+                    }
+                }
+            }
+        },
+        "/workflows/v1/": {
+            "get": {
+                "operationId": "list_of_workflows",
+                "summary": "workflows list",
+                "description": "workflows list",
+                "security": [{
+                    "oauth": [
+                        "read"
+                    ]
+                }],
+                "parameters": [
+
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/responses/ListOfWorkflowsResponse"
+                    }
+                }
+            }
+        },
+        "/states/{task_id}/v1/": {
+            "get": {
+                "operationId": "list_of_states",
+                "summary": "get states based on task current state",
+                "description": "get states",
+                "security": [{
+                    "oauth": [
+                        "read"
+                    ]
+                }],
+                "parameters": [{
+                    "$ref": "#/parameters/TaskIdRequest"
+                }],
+                "responses": {
+                    "200": {
+                        "$ref": "#/responses/ListOfStatesResponse"
+                    }
+                }
+            }
+        },
+        "/transition/{task_id}/v1/": {
+            "get": {
+                "operationId": "transition_details",
+                "summary": "get transition details between two states",
+                "description": "get states",
+                "security": [{
+                    "oauth": [
+                        "read"
+                    ]
+                }],
+                "parameters": [{
+                        "$ref": "#/parameters/TaskIdRequest"
+                    },
+                    {
+                        "$ref": "#/parameters/TransitionDetailsParameters"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/responses/TransitionDetailsResponse"
+                    }
+                }
+            }
+        }
     }
-    
+}

@@ -1,4 +1,20 @@
-__all__ = []
+from project_management_portal.models.user import User
+from project_management_portal.models.project import Project
+from project_management_portal.models.workflow import Workflow
+from project_management_portal.models.state import State
+from project_management_portal.models.transition import Transition
+from project_management_portal.models.task import Task
+from project_management_portal.models.checklist import Checklist
+
+__all__ = [
+    "User",
+    "Project",
+    "Workflow",
+    "State",
+    "Transition",
+    "Task",
+    "Checklist"
+    ]
 
 # class DummyModel(AbstractDateTimeModel):
 #     """
