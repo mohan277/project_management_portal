@@ -61,8 +61,8 @@ import requests
 
 
 # get transition details between two states
-# url = 'http://localhost:8080/api/project_management_portal/transition/10/v1/'
-# data = '{"to_state": 1}'
-# headers={"Content-type": "application/json", "Authorization": "Bearer mohana"}
-# response = requests.get(url=url, data=data, headers=headers)
-# print(response.content)
+url = 'http://localhost:8080/api/project_management_portal/transition/1/v1/'
+data = '{"to_state": 1}'
+headers={"Content-type": "application/json", "Authorization": "Bearer QNBB6gmk1638BO1mxfEbSx1vKCu7DA"}
+response = requests.get(url=url, data=data, headers=headers)
+print(response.content)

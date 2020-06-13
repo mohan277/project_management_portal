@@ -7,6 +7,8 @@ from datetime import datetime
 @dataclass
 class AccessTokenDto:
     access_token: str
+    refresh_token: str
+    expires_in: int
     is_admin: bool
 
 

@@ -26,9 +26,6 @@ class StateStorageImplementation(StateStorageInterface):
         transition_objs = Transition.objects.filter(
             workflows__projects__tasks__id=task_id,
             from_state_id=current_state_id)
-        # print("$"*100)
-        # print(transition_objs)
-        # print("$"*100)
 
         total_count_of_to_states = len(transition_objs)
 

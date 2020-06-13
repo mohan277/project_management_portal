@@ -33,7 +33,6 @@ def project_details_dto():
 
 
 @pytest.fixture()
-@freeze_time("2020-05-20")
 def create_project_expected_output_response():
     create_project_expected_output_response = {
         "name": "project_1",
@@ -42,7 +41,7 @@ def create_project_expected_output_response():
         "workflow_type": "workflow_type_1",
         "project_type": "CRM",
         "created_by": "user_1",
-        "created_at": datetime.datetime(2020, 5, 20, 0, 0)
+        "created_at": '2020-05-20 00:00:00'
     }
     return create_project_expected_output_response
 
@@ -66,7 +65,6 @@ def list_of_project_dtos():
 
 
 @pytest.fixture()
-@freeze_time("2020-05-20")
 def get_admin_projects_expected_output_response():
     get_projects_expected_output = {
         "projects": [
@@ -76,7 +74,7 @@ def get_admin_projects_expected_output_response():
                 "description": "description_1",
                 "workflow_type": "workflow_type_1",
                 "project_type": ProjectType.CRM.value,
-                "created_at": datetime.datetime(2020, 5, 20, 0, 0),
+                "created_at": '2020-05-20 00:00:00',
                 "created_by": "user_1"
             }
         ],
@@ -115,7 +113,6 @@ def task_details_dto():
 
 
 @pytest.fixture()
-@freeze_time("2020-05-20")
 def create_task_expected_output():
     response = {
         "title": "title_1",
@@ -124,7 +121,7 @@ def create_task_expected_output():
         "project": "project_1",
         "state": "state_1",
         "issue_type": IssueType.BUG.value,
-        "created_at": datetime.datetime(2020, 5, 20, 0, 0),
+        "created_at": '2020-05-20 00:00:00',
         "created_by": "user_1"
     }
     return response
@@ -152,7 +149,6 @@ def list_of_task_dtos():
 
 
 @pytest.fixture()
-@freeze_time("2020-05-20")
 def get_tasks_expected_output():
     response = {
         "tasks": [
@@ -163,7 +159,7 @@ def get_tasks_expected_output():
                 "project": "project_1",
                 "state": "state_1",
                 "issue_type": IssueType.BUG.value,
-                "created_at": datetime.datetime(2020, 5, 20, 0, 0),
+                "created_at": '2020-05-20 00:00:00',
                 "created_by": "user_1"
             }
         ],

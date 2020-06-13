@@ -248,13 +248,13 @@ def get_member_projects_expected_output(list_of_member_projects_dtos):
 def task_details_dto():
     task_details_dto = TaskDto(
         task_id=1,
-        title="task_1",
+        title="title_1",
         description="description_1",
-        project=1,
-        state="TODO",
-        created_by="user_1",
+        project="project_1",
+        state="In Progress",
+        created_by="mohan",
         created_at=datetime.datetime(2020, 5, 20, 0, 0),
-        issue_type="Task"
+        issue_type="Bug"
 )
     return task_details_dto
 
@@ -330,6 +330,16 @@ def get_workflows_expected_output(list_of_workflow_dtos):
     return response
 
 
+@pytest.fixture()
+@freeze_time("2020-05-20")
+def no_workflows_expected_output():
+    response = ListOfWorkflowsDto(
+        list_of_workflow_dtos=[],
+        total_count_of_workflows=0
+    )
+    return response
+
+
 #################### get to states based on current  state ###############
 
 
@@ -337,8 +347,8 @@ def get_workflows_expected_output(list_of_workflow_dtos):
 def list_of_to_state_dtos():
     list_of_to_state_dtos = [
         ToStateDto(
-            name="state_1",
-            to_state_id=1
+            name="In Progress",
+            to_state_id=2
         )
     ]
     return list_of_to_state_dtos
@@ -351,3 +361,5 @@ def details_of_to_states_based_on_current_state(list_of_to_state_dtos):
         total_count_of_to_states=1
         )
     return details_of_to_states_based_on_current_state
+
+

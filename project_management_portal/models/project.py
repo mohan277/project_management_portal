@@ -26,3 +26,7 @@ class Project(models.Model):
         'User', on_delete=models.CASCADE, related_name='admin_projects')
 
     assigned_to = models.ManyToManyField('User', related_name='member_projects')
+
+
+    class Meta:
+        ordering = ['-created_at']˜˜

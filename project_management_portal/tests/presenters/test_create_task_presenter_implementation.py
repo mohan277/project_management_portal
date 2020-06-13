@@ -4,7 +4,7 @@ from project_management_portal.presenters.presenter_implementation import \
     PresenterImplementation
 
 
-def test_create_project_valid_details_returns_created_project_details(
+def test_create_task_valid_details_returns_created_task_details(
     task_details_dto, create_task_expected_output):
 
     # Arrange

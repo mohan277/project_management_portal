@@ -4,7 +4,7 @@ from project_management_portal.presenters.presenter_implementation import \
     PresenterImplementation
 
 
-def test_get_admin_projects_returns_list_of_projects(
+def test_get_tasks_returns_list_of_tasks(
     list_of_tasks_dto, get_tasks_expected_output):
 
     # Arrange
