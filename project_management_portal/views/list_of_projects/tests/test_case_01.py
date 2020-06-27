@@ -2,7 +2,7 @@
 # TODO: Update test case description
 """
 
-from django_swagger_utils.utils.test import CustomAPITestCase
+from project_management_portal.utils.custom_tests_utils import CustomTestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 REQUEST_BODY = """
@@ -12,7 +12,7 @@ REQUEST_BODY = """
 TEST_CASE = {
     "request": {
         "path_params": {},
-        "query_params": {"offset": 272, "limit": 938, "sort": true},
+        "query_params": {"offset": -272, "limit": 938, "sort": True},
         "header_params": {},
         "securities": {"oauth": {"tokenUrl": "http://auth.ibtspl.com/oauth2/", "flow": "password", "scopes": ["read"], "type": "oauth2"}},
         "body": REQUEST_BODY,
@@ -20,7 +20,7 @@ TEST_CASE = {
 }
 
 
-class TestCase01ListOfProjectsAPITestCase(CustomAPITestCase):
+class TestCase01ListOfProjectsAPITestCase(CustomTestUtils):
     app_name = APP_NAME
     operation_name = OPERATION_NAME
     request_method = REQUEST_METHOD

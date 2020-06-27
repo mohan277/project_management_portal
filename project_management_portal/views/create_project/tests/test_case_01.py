@@ -1,7 +1,7 @@
 """
 # TODO: Update test case description
 """
-
+from project_management_portal.models.factories import *
 from django_swagger_utils.utils.test import CustomAPITestCase
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
@@ -36,3 +36,4 @@ class TestCase01CreateProjectAPITestCase(CustomAPITestCase):
         self.default_test_case() # Returns response object.
         # Which can be used for further response object checks.
         # Add database state checks here.
+

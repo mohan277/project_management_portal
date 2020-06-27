@@ -30,7 +30,7 @@ def api_wrapper(*args, **kwargs):
         description=request_data['description'],
         workflow_type=request_data['workflow_type'],
         project_type=request_data['project_type'],
-        assigned_to=request_data['assigned_to']
+        assigned_to=[]#request_data['assigned_to']
     )
 
     response_data = json.dumps(project_details_dict)

@@ -6,6 +6,7 @@ from project_management_portal.models.transition import Transition
 from project_management_portal.models.task import Task
 from project_management_portal.models.checklist import Checklist
 
+
 __all__ = [
     "User",
     "Project",
