@@ -4,7 +4,7 @@
 
 from project_management_portal.models import Project
 from project_management_portal.models.factories import WorkflowFactory, \
-    ProjectFactory, UserFactory
+    ProjectFactory
 from project_management_portal.utils.custom_tests_utils import CustomTestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
@@ -41,8 +41,6 @@ class TestCase02CreateProjectAPITestCase(CustomTestUtils):
             username=username, password=password
         )
         workflow = WorkflowFactory()
-        # user = UserFactory()
-
 
     def test_case(self):
         self.default_test_case() # Returns response object.

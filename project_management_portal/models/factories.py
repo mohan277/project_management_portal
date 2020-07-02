@@ -1,16 +1,16 @@
 import datetime
 import factory, factory.django
 from django.utils import timezone
-from project_management_portal.models import User, Checklist, State, \
+from project_management_portal.models import Checklist, State, \
     Workflow, Transition, Project, Task
 
 
-class UserFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = User
-    name  = factory.Sequence(lambda n: 'user_%d' %n)
-    profile_pic = factory.Sequence(lambda n: 'profile_pic_%d' %n)
-    is_admin = factory.Faker('pybool')
+# class UserFactory(factory.django.DjangoModelFactory):
+#     class Meta:
+#         model = User
+#     name  = factory.Sequence(lambda n: 'user_%d' %n)
+#     profile_pic = factory.Sequence(lambda n: 'profile_pic_%d' %n)
+#     is_admin = factory.Faker('pybool')
 
 
 class StateFactory(factory.django.DjangoModelFactory):
@@ -81,15 +81,15 @@ class ProjectFactory(factory.django.DjangoModelFactory):
     workflow_type = factory.SubFactory(WorkflowFactory)
     created_at = factory.LazyFunction(timezone.now)
     project_type = factory.Iterator(['Classic Software', 'Financial', 'CRM'])
-    created_by = factory.SubFactory(UserFactory)
+    created_by_id = 1
 
-    @factory.post_generation
-    def assigned_to(self, create, extracted, **kwargs):
-        if not create:
-            return
-        if extracted:
-            for user in extracted:
-                self.assigned_to.add(user)
+    # @factory.post_generation
+    # def developers(self, create, extracted, **kwargs):
+    #     if not create:
+    #         return
+    #     if extracted:
+    #         for user in extracted:
+    #             self.assigned_to.add(user)
 
 
 class TaskFactory(factory.django.DjangoModelFactory):
@@ -101,5 +101,5 @@ class TaskFactory(factory.django.DjangoModelFactory):
     issue_type = factory.Iterator(['Task', 'Bug', 'Developer story', 'User story', 'Enhancement'])
     project = factory.SubFactory(ProjectFactory)
     state = factory.SubFactory(StateFactory)
-    created_by = factory.SubFactory(UserFactory)
+    created_by_id = 1
     created_at = factory.LazyFunction(timezone.now)

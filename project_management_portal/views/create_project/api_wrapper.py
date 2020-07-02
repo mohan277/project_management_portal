@@ -16,21 +16,20 @@ def api_wrapper(*args, **kwargs):
 
     storage = ProjectStorageImplementation()
     presenter = PresenterImplementation()
-    interactor = CreateProjectInteractor(
-        storage=storage,
-        presenter=presenter
-    )
+    interactor = CreateProjectInteractor(storage=storage)
 
     user = kwargs['user']
     request_data = kwargs['request_data']
+    developers = []
 
-    project_details_dict = interactor.create_project(
+    project_details_dict = interactor.create_project_wrapper(
         user_id=user.id,
+        presenter=presenter,
         name=request_data['name'],
+        developers=developers,
         description=request_data['description'],
-        workflow_type=request_data['workflow_type'],
         project_type=request_data['project_type'],
-        assigned_to=[]#request_data['assigned_to']
+        workflow_type=request_data['workflow_type']
     )
 
     response_data = json.dumps(project_details_dict)

@@ -10,9 +10,11 @@ snapshots = Snapshot()
 snapshots['TestCase03CreateProjectAPITestCase::test_case status'] = 200
 
 snapshots['TestCase03CreateProjectAPITestCase::test_case body'] = {
-    'created_at': '2020-06-27 10:26',
-    'created_by': 'username',
+    'created_at': '2020-07-02 14:35:42',
+    'created_by_id': 1,
     'description': 'string',
+    'developers': [
+    ],
     'name': 'string',
     'project_id': 2,
     'project_type': 'Classic Software',
@@ -25,7 +27,7 @@ snapshots['TestCase03CreateProjectAPITestCase::test_case header_params'] = {
         'en'
     ],
     'content-length': [
-        '192',
+        '207',
         'Content-Length'
     ],
     'content-type': [
@@ -49,5 +51,3 @@ snapshots['TestCase03CreateProjectAPITestCase::test_case description'] = 'string
 snapshots['TestCase03CreateProjectAPITestCase::test_case workflow_type'] = 1
 
 snapshots['TestCase03CreateProjectAPITestCase::test_case project_type'] = 'Classic Software'
-
-snapshots['TestCase03CreateProjectAPITestCase::test_case created_by'] = 1

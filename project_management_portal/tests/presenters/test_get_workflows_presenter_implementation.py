@@ -1,6 +1,5 @@
 import pytest
 import datetime
-from project_management_portal.models import User, Project, Workflow
 from project_management_portal.interactors.storages.dtos import \
     ProjectDto, UserDto, WorkflowTypeDto
 from project_management_portal.presenters.presenter_implementation import \

@@ -9,7 +9,7 @@ from project_management_portal.storages.transition_storage_implementation \
 @pytest.mark.django_db
 @freeze_time("2020-05-20")
 def test_create_transition_with_valid_details_return_transition_details_dto(
-    create_users, create_workflow, create_project, task_details_dto):
+    create_workflow, create_project, task_details_dto):
 
     # Arrange
     name = "transition_1"

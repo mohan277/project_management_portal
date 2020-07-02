@@ -1,5 +1,7 @@
 from typing import List
-from project_management_portal.models import Task, Project, State, User
+from project_management_portal.models import Task, Project, State
+from project_management_portal.adapters.service_adapter import \
+    get_service_adapter
 from project_management_portal.interactors.storages. \
     task_storage_interface import TaskStorageInterface
 from project_management_portal.exceptions import \
@@ -70,7 +72,7 @@ class TaskStorageImplementation(TaskStorageInterface):
             description=task_obj.description,
             project=task_obj.project.name,
             state=task_obj.state.name,
-            created_by=task_obj.created_by.username,
+            created_by_id=task_obj.created_by_id,
             created_at=task_obj.created_at,
             issue_type=task_obj.issue_type
         )
@@ -91,10 +93,3 @@ class TaskStorageImplementation(TaskStorageInterface):
         is_state_id_valid = State.objects.filter(id=state).exists()
 
         return is_state_id_valid
-
-
-    def is_valid_user_id(self, user_id: int):
-
-        is_user_id_valid = User.objects.filter(id=user_id).exists()
-
-        return is_user_id_valid

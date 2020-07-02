@@ -1,23 +1,23 @@
-import pytest
-import datetime
-from project_management_portal.models import User, Project, Workflow
-from project_management_portal.interactors.storages.dtos import \
-    ProjectDto, UserDto, WorkflowTypeDto
-from project_management_portal.presenters.presenter_implementation import \
-    PresenterImplementation
+# import pytest
+# import datetime
+# from project_management_portal.models import Project, Workflow
+# from project_management_portal.interactors.storages.dtos import \
+#     ProjectDto, UserDto, WorkflowTypeDto
+# from project_management_portal.presenters.presenter_implementation import \
+#     PresenterImplementation
 
 
-def test_create_project_valid_details_returns_created_project_details(
-    project_details_dto,
-    create_project_expected_output_response):
+# def test_create_project_valid_details_returns_created_project_details(
+#     project_details_dto,
+#     create_project_expected_output_response):
 
-    # Arrange
-    presenter = PresenterImplementation()
+#     # Arrange
+#     presenter = PresenterImplementation()
 
-    # Act
-    response = presenter.get_create_project_response(
-        project_details_dto=project_details_dto
-    )
+#     # Act
+#     response = presenter.get_create_project_response(
+#         project_details_dto=project_details_dto
+#     )
 
-    # Assert
-    assert response == create_project_expected_output_response
+#     # Assert
+#     assert response == create_project_expected_output_response

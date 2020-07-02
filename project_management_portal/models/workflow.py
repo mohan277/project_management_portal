@@ -1,6 +1,5 @@
 from django.db import models
 
-from project_management_portal.models.user import User
 
 class Workflow(models.Model):
     name = models.CharField(max_length=100)

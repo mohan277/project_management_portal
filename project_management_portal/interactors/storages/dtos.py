@@ -25,14 +25,33 @@ class UserDto:
 
 
 @dataclass
+class FinalUserDTO:
+    name: str
+    user_id: int
+    is_admin: bool
+    profile_pic_url: str
+
+
+@dataclass
+class IsAdminDTO:
+    is_admin: bool
+
+
+@dataclass
 class ProjectDto:
     name: str
     project_id: int
     description: str
     workflow_type: str
     project_type: ProjectType
-    created_by: str
+    created_by_id: int
     created_at: datetime
+
+
+@dataclass
+class FinalProjectDTO:
+    project_details_dto: ProjectDto
+    user_details_dtos: List[FinalUserDTO]
 
 
 @dataclass
@@ -44,7 +63,7 @@ class ProjectDetailsDto:
 
 @dataclass
 class ListOfProjectsDto:
-    list_of_project_dtos: List[ProjectDto]
+    list_of_project_dtos: List[FinalProjectDTO]
     total_count_of_projects: int
 
 
@@ -67,7 +86,7 @@ class TaskDto:
     project: int
     state: str
     issue_type: IssueType
-    created_by: str
+    created_by_id: str
     created_at: datetime
 
 

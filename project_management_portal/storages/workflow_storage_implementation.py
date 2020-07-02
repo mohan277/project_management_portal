@@ -1,5 +1,5 @@
 from typing import List
-from project_management_portal.models import User, Project, Workflow
+from project_management_portal.models import Project, Workflow
 from project_management_portal.interactors.storages. \
     workflow_storage_interface import WorkflowStorageInterface
 from project_management_portal.interactors.storages.dtos import \

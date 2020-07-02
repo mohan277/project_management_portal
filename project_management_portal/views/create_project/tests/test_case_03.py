@@ -6,7 +6,7 @@ from freezegun import freeze_time
 from django.utils import timezone
 from project_management_portal.models import Project
 from project_management_portal.models.factories import WorkflowFactory, \
-    ProjectFactory, UserFactory
+    ProjectFactory
 from project_management_portal.utils.custom_tests_utils import CustomTestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
@@ -46,7 +46,7 @@ class TestCase03CreateProjectAPITestCase(CustomTestUtils):
         user.is_admin = True
         user.save()
         workflow = WorkflowFactory()
-        ProjectFactory.create(workflow_type=workflow, created_by=user, created_at=timezone.now)
+        ProjectFactory.create(workflow_type=workflow, created_by_id=1, created_at=timezone.now)
 
 
     def test_case(self):

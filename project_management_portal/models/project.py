@@ -1,6 +1,5 @@
 from django.db import models
 from project_management_portal.constants.enums import ProjectType
-from project_management_portal.models.user import User
 from project_management_portal.models.workflow import Workflow
 
 
@@ -22,10 +21,7 @@ class Project(models.Model):
     project_type = models.CharField(
         max_length=20, choices=PROJECT_CHOICE, default=None, null=True)
 
-    created_by = models.ForeignKey(
-        'User', on_delete=models.CASCADE, related_name='admin_projects')
-
-    assigned_to = models.ManyToManyField('User', related_name='member_projects')
+    created_by_id = models.IntegerField()
 
 
     class Meta:

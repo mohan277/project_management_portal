@@ -1,7 +1,7 @@
 import pytest
 import datetime
 from freezegun import freeze_time
-from project_management_portal.models import Project, Workflow, User
+from project_management_portal.models import Project, Workflow
 from django_swagger_utils.drf_server.exceptions import NotFound
 from project_management_portal.storages.project_storage_implementation \
     import ProjectStorageImplementation

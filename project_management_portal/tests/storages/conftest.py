@@ -4,7 +4,6 @@ from freezegun import freeze_time
 from project_management_portal.constants.enums import ProjectType, IssueType
 from project_management_portal.interactors.storages.dtos import (
     ProjectDto,
-    UserDto,
     WorkflowTypeDto,
     ListOfProjectsDto,
     TaskDto,
@@ -17,22 +16,12 @@ from project_management_portal.interactors.storages.dtos import (
     ListOfTasksDto
 )
 from project_management_portal.models import (
-    User,
     Project,
     State,
     Transition,
     Workflow,
     Task
 )
-
-
-@pytest.fixture
-def create_users():
-    user_objs = User.objects.bulk_create([
-        User(username='mohan', name='user_1', is_admin=True, profile_pic='profile_pic_1'),
-        User(username='krishna', name='user_2', is_admin=False, profile_pic='profile_pic_2')
-    ])
-    return user_objs
 
 
 @pytest.fixture
@@ -102,30 +91,28 @@ def create_workflow(create_state, create_transition):
 
 @pytest.fixture
 @freeze_time("2020-05-20")
-def create_project(create_users, create_workflow):
-
-    user_obj = User.objects.get(id=2)
+def create_project(create_workflow):
 
     project_objs = Project.objects.bulk_create(
         [
-            Project(id=1,
-                    name='project_1',
-                    created_by_id=1,
-                    description='description_1',
-                    workflow_type_id=1,
-                    project_type='CRM'
-                ),
-            Project(id=2,
-                    name='project_2',
-                    created_by_id=1,
-                    description='description_2',
-                    workflow_type_id=1,
-                    project_type='Financial'
-                )
-            ]
-        )
-    project_obj_1 = project_objs[0]
-    project_obj_1.assigned_to.add(user_obj)
+            Project(
+                id=1,
+                name='project_1',
+                created_by_id=1,
+                description='description_1',
+                workflow_type_id=1,
+                project_type='CRM'
+            ),
+            Project(
+                id=2,
+                name='project_2',
+                created_by_id=1,
+                description='description_2',
+                workflow_type_id=1,
+                project_type='Financial'
+            )
+        ]
+    )
     return project_objs
 
 
@@ -172,7 +159,7 @@ def project_details_dto():
         description='The name of the project is project_management_portal',
         workflow_type='workflow_type_1',
         project_type=ProjectType.CRM.value,
-        created_by='mohan',
+        created_by_id=1,
         created_at=datetime.datetime(2020, 5, 20, 0, 0)
     )
     return project_details_dto
@@ -190,7 +177,7 @@ def list_of_admin_projects_dtos():
             description='description_1',
             workflow_type='workflow_type_1',
             project_type='CRM',
-            created_by='mohan',
+            created_by_id=1,
             created_at=datetime.datetime(2020, 5, 20, 0, 0)
         ),
         ProjectDto(
@@ -199,7 +186,7 @@ def list_of_admin_projects_dtos():
             description='description_2',
             workflow_type='workflow_type_1',
             project_type='Financial',
-            created_by='mohan',
+            created_by_id=1,
             created_at=datetime.datetime(2020, 5, 20, 0, 0)
         )
     ]
@@ -226,7 +213,7 @@ def list_of_member_projects_dtos():
             description='description_1',
             workflow_type='workflow_type_1',
             project_type='CRM',
-            created_by='mohan',
+            created_by_id=1,
             created_at=datetime.datetime(2020, 5, 20, 0, 0)
         )
     ]
@@ -252,7 +239,7 @@ def task_details_dto():
         description="description_1",
         project="project_1",
         state="In Progress",
-        created_by="mohan",
+        created_by_id=1,
         created_at=datetime.datetime(2020, 5, 20, 0, 0),
         issue_type="Bug"
 )
@@ -273,7 +260,7 @@ def list_of_task_dtos():
             project="project_1",
             state="TODO",
             issue_type=IssueType.TASK.value,
-            created_by='mohan',
+            created_by_id=1,
             created_at=datetime.datetime(2020, 5, 20, 0, 0)
         )
     ]

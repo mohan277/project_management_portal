@@ -7,7 +7,6 @@ class CustomTestUtils(CustomAPITestCase):
         super(CustomTestUtils, self).setupUser(
             username=username, password=password
         )
-        UserFactory.reset_sequence()
         StateFactory.reset_sequence()
         ChecklistFactory.reset_sequence()
         TransitionFactory.reset_sequence()
