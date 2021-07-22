@@ -1,5 +1,5 @@
 from typing import List
-from project_management_portal.models import User, Project, Workflow, Task, \
+from project_management_portal.models import Project, Workflow, Task, \
     Transition
 from project_management_portal.interactors.storages. \
     state_storage_interface import StateStorageInterface

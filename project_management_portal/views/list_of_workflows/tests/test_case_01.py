@@ -2,7 +2,8 @@
 # TODO: Update test case description
 """
 
-from django_swagger_utils.utils.test import CustomAPITestCase
+from project_management_portal.models.factories import WorkflowFactory
+from project_management_portal.utils.custom_tests_utils import CustomTestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 REQUEST_BODY = """
@@ -20,12 +21,18 @@ TEST_CASE = {
 }
 
 
-class TestCase01ListOfWorkflowsAPITestCase(CustomAPITestCase):
+class TestCase01ListOfWorkflowsAPITestCase(CustomTestUtils):
     app_name = APP_NAME
     operation_name = OPERATION_NAME
     request_method = REQUEST_METHOD
     url_suffix = URL_SUFFIX
     test_case_dict = TEST_CASE
+
+    def setupUser(self, username, password):
+        super(TestCase01ListOfWorkflowsAPITestCase, self).setupUser(
+            username=username, password=password
+        )
+        WorkflowFactory.create_batch(10)
 
     def test_case(self):
         self.default_test_case() # Returns response object.

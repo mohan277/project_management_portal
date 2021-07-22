@@ -27,7 +27,6 @@ class Task(models.Model):
                               related_name='tasks',
                               default='TODO')
 
-    created_by = models.ForeignKey(
-        'User', on_delete=models.CASCADE, related_name='tasks')
+    created_by_id = models.IntegerField()
 
     created_at = models.DateTimeField(auto_now=True)

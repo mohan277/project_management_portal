@@ -17,13 +17,7 @@ def api_wrapper(*args, **kwargs):
     storage = TransitionStorageImplementation()
     presenter = PresenterImplementation()
 
-    print("#"*100)
-    print(kwargs)
-    print("#"*100)
-
     request_data = kwargs['request_data']
-    print(request_data)
-    print("#"*100)
     task_id = kwargs['task_id']
     to_state = request_data['to_state']
 
@@ -34,7 +28,6 @@ def api_wrapper(*args, **kwargs):
                                                   to_state=to_state)
 
     response_data = json.dumps(list_of_checklists_dict)
-    print(response_data)
     return HttpResponse(response_data, status=200)
 
 

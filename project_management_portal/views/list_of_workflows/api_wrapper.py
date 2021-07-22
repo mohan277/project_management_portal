@@ -20,7 +20,6 @@ def api_wrapper(*args, **kwargs):
     interactor = GetWorkflowsInteractor(storage=storage, presenter=presenter)
 
     list_of_workflows_dict = interactor.get_list_of_workflows()
-    # print(list_of_workflows_dict)
     response_data = json.dumps(list_of_workflows_dict)
     print(response_data)
     return HttpResponse(response_data, status=200)

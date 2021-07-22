@@ -340,7 +340,7 @@ TEST_RUNNER = 'snapshottest.django.TestRunner'
 MOCK_X_IB_REQUEST_ID = True
 
 STAGE = os.environ.get("STAGE", "local")
-AUTH_USER_MODEL = "project_management_portal.User"
+AUTH_USER_MODEL = "project_management_portal_auth.User"
 
 DEFAULT_OAUTH_APPLICATION_NAME = "project_management_portal"
 DEFAULT_OAUTH_CLIENT_ID = ""

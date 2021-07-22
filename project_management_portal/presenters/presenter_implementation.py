@@ -32,7 +32,9 @@ from project_management_portal.interactors.storages.dtos import (
     ListOfProjectsDto,
     ListOfWorkflowsDto,
     ListOfToStatesDto,
-    ListOfChecklistsDto
+    ListOfChecklistsDto,
+    FinalProjectDTO,
+    FinalUserDTO
 )
 
 
@@ -45,7 +47,6 @@ class PresenterImplementation(PresenterInterface):
     def raise_invalid_password(self):
         raise BadRequest(*INVALID_PASSWORD)
 
-
     def get_access_token(self, access_token:str, is_admin: bool):
         authorization_details = {
             "access_token": access_token,
@@ -57,16 +58,14 @@ class PresenterImplementation(PresenterInterface):
     def raise_invalid_workflow_type_id_exception(self):
         raise NotFound(*INVALID_WORKFLOW_TYPE)
 
-
-    def raise_invalid_list_of_user_ids_exception(self):
-        raise NotFound(*INVALID_LIST_OF_USER_IDS)
-
-
     def raise_invalid_admin_exception(self):
         raise NotFound(*INVALID_ADMIN)
 
 
-    def get_create_project_response(self, project_details_dto: ProjectDto):
+    def get_create_project_response(
+        self, final_project_details_dto: FinalProjectDTO):
+        project_details_dto = final_project_details_dto.project_details_dto
+        user_details_dtos = final_project_details_dto.user_details_dtos
 
         response = {
             "name": project_details_dto.name,
@@ -74,14 +73,27 @@ class PresenterImplementation(PresenterInterface):
             "description": project_details_dto.description,
             "workflow_type": project_details_dto.workflow_type,
             "project_type": project_details_dto.project_type,
-            "created_by": project_details_dto.created_by,
+            "created_by_id": project_details_dto.created_by_id,
             "created_at": project_details_dto.created_at.strftime(
-                DEFAULT_DATE_TIME_FORMAT)
+                DEFAULT_DATE_TIME_FORMAT
+            ),
+            "developers": self.get_user_details(
+                user_dtos=user_details_dtos
+            )
         }
-
         return response
 
-
+    def get_user_details(self, user_dtos: List[FinalUserDTO]):
+        list_of_user_details = [
+            {
+                "name": user_dto.name,
+                "user_id": user_dto.user_id,
+                "is_admin": user_dto.is_admin,
+                "profile_pic_url": user_dto.profile_pic_url
+            }
+            for user_dto in user_dtos
+        ]
+        return list_of_user_details
 
     def raise_invalid_limit_value_exception(self):
         raise BadRequest(*INVALID_LIMIT_VALUE)
@@ -131,7 +143,7 @@ class PresenterImplementation(PresenterInterface):
             "description": task_details_dto.description,
             "project": task_details_dto.project,
             "state": task_details_dto.state,
-            "created_by": task_details_dto.created_by,
+            "created_by_id": task_details_dto.created_by_id,
             "issue_type": task_details_dto.issue_type,
             "created_at": task_details_dto.created_at.strftime(
                 DEFAULT_DATE_TIME_FORMAT)

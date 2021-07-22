@@ -1,27 +1,75 @@
 from typing import List
-from project_management_portal.exceptions import InvalidListOfUserIdsException
+from project_management_portal.exceptions import InvalidWorkflowIdException, \
+    InvalidAdminException
 from project_management_portal.interactors.storages. \
     project_storage_interface import ProjectStorageInterface
+from project_management_portal.interactors.storages.dtos import \
+    FinalProjectDTO
 from project_management_portal.interactors.presenters.presenter_interface \
     import PresenterInterface
+from project_management_portal.adapters.service_adapter import \
+    get_service_adapter
 
 
 class CreateProjectInteractor:
-    def __init__(self,
-                 storage: ProjectStorageInterface,
-                 presenter: PresenterInterface):
-
+    def __init__(self, storage: ProjectStorageInterface):
             self.storage = storage
-            self.presenter = presenter
+
+    def create_project_wrapper(self,
+                               name: str,
+                               user_id: int,
+                               description: str,
+                               project_type: str,
+                               workflow_type: int,
+                               developers: List[int],
+                               presenter: PresenterInterface):
+
+        try:
+            response = self._get_create_project_response(
+                name=name,
+                user_id=user_id,
+                presenter=presenter,
+                developers=developers,
+                description=description,
+                project_type=project_type,
+                workflow_type=workflow_type
+            )
+            return response
+        except InvalidWorkflowIdException:
+            presenter.raise_invalid_workflow_type_id_exception()
+        except InvalidAdminException:
+            presenter.raise_invalid_admin_exception()
+
+
+    def _get_create_project_response(self,
+                                     name: str,
+                                     user_id: int,
+                                     description: str,
+                                     project_type: str,
+                                     workflow_type: int,
+                                     developers: List[int],
+                                     presenter: PresenterInterface):
+
+        final_project_details_dto = self.create_project(
+            name=name,
+            user_id=user_id,
+            developers=developers,
+            description=description,
+            project_type=project_type,
+            workflow_type=workflow_type
+        )
+        response = presenter.get_create_project_response(
+            final_project_details_dto=final_project_details_dto
+        )
+        return response
 
     def create_project(self,
                        name: str,
                        user_id: int,
                        description: str,
-                       workflow_type: int,
                        project_type: str,
-                       assigned_to: List[int]):
-
+                       workflow_type: int,
+                       developers: List[int]):
 
         is_workflow_type_id_valid = self.storage.is_valid_workflow_type_id(
             workflow_type=workflow_type
@@ -30,38 +78,34 @@ class CreateProjectInteractor:
         is_workflow_type_id_invalid = not is_workflow_type_id_valid
 
         if is_workflow_type_id_invalid:
-            self.presenter.raise_invalid_workflow_type_id_exception()
-            return
+            raise InvalidWorkflowIdException
 
-        is_valid_user_ids_list = self.storage.is_valid_user_ids_list(
-            assigned_to=assigned_to)
+        service_adapter = get_service_adapter()
+        is_admin_valid_dto = service_adapter.validate_admin. \
+            get_is_admin_valid_dto(user_id=user_id)
 
-        is_invalid_user_ids_list = not is_valid_user_ids_list
-
-        if is_invalid_user_ids_list:
-            self.presenter.raise_invalid_list_of_user_ids_exception()
-            return
-
-        is_admin = self.storage.is_admin(user_id=user_id)
+        is_admin = is_admin_valid_dto.is_admin
 
         is_not_admin = not is_admin
 
         if is_not_admin:
-            self.presenter.raise_invalid_admin_exception()
-            return
-
+            raise InvalidAdminException
 
         project_details_dto = self.storage.create_project(
             name=name,
             user_id=user_id,
+            developers=developers,
             description=description,
             workflow_type=workflow_type,
-            project_type=project_type,
-            assigned_to=assigned_to
+            project_type=project_type
         )
 
-        response = self.presenter.get_create_project_response(
+        user_details_dtos = service_adapter.auth_service.get_user_dtos(
+            user_ids=developers
+        )
+
+        final_project_details_dto = FinalProjectDTO(
+            user_details_dtos=user_details_dtos,
             project_details_dto=project_details_dto
         )
-
-        return response
+        return final_project_details_dto

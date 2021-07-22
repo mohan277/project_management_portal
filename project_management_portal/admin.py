@@ -1,6 +1,5 @@
 from django.contrib import admin
 from project_management_portal.models import (
-    User,
     Task,
     State,
     Project,
@@ -10,7 +9,6 @@ from project_management_portal.models import (
 )
 
 
-admin.site.register(User)
 admin.site.register(Task)
 admin.site.register(State)
 admin.site.register(Project)

@@ -4,17 +4,36 @@ from freezegun import freeze_time
 from project_management_portal.constants.enums import ProjectType, IssueType
 from project_management_portal.interactors.storages.dtos import (
     ProjectDto,
-    UserDto,
     WorkflowTypeDto,
     ListOfProjectsDto,
     WorkflowDto,
     ListOfWorkflowsDto,
     TaskDto,
-    ListOfTasksDto
+    ListOfTasksDto,
+    FinalUserDTO,
+    FinalProjectDTO
 )
 
 
 ###################create project ####################
+@pytest.fixture()
+@freeze_time("2020-05-20")
+def user_details_dtos():
+    user_details_dtos = [
+        FinalUserDTO(
+            name='user1',
+            user_id=1,
+            is_admin=True,
+            profile_pic_url='profile_pic_url1'
+        ),
+        FinalUserDTO(
+            name='user2',
+            user_id=2,
+            is_admin=False,
+            profile_pic_url='profile_pic_url2'
+        )
+    ]
+    return user_details_dtos
 
 
 @pytest.fixture()
@@ -26,10 +45,21 @@ def project_details_dto():
         description='description_1',
         workflow_type='workflow_type_1',
         project_type=ProjectType.CRM.value,
-        created_by='user_1',
+        created_by_id=1,
         created_at=datetime.datetime(2020, 5, 20, 0, 0)
     )
     return project_details_dto
+
+
+@pytest.fixture()
+@freeze_time("2020-05-20")
+def final_project_details_dto(project_details_dto, user_details_dtos):
+    final_project_details_dto = FinalProjectDTO(
+        user_details_dtos=user_details_dtos,
+        project_details_dto=project_details_dto
+    )
+    return final_project_details_dto
+
 
 
 @pytest.fixture()
@@ -40,8 +70,22 @@ def create_project_expected_output_response():
         "description": "description_1",
         "workflow_type": "workflow_type_1",
         "project_type": "CRM",
-        "created_by": "user_1",
-        "created_at": '2020-05-20 00:00:00'
+        "created_by_id": 1,
+        "created_at": '2020-05-20 00:00:00',
+        "developers": [
+            {
+                "name": 'user1',
+                "user_id": 1,
+                "is_admin": True,
+                "profile_pic_url": 'profile_pic_url1'
+            },
+            {
+                "name": 'user2',
+                "user_id": 2,
+                "is_admin": False,
+                "profile_pic_url": 'profile_pic_url2'
+            }
+        ]
     }
     return create_project_expected_output_response
 
@@ -57,7 +101,7 @@ def list_of_project_dtos():
             description='description_1',
             workflow_type='workflow_type_1',
             project_type=ProjectType.CRM.value,
-            created_by='user_1',
+            created_by_id=1,
             created_at=datetime.datetime(2020, 5, 20, 0, 0)
         )
     ]
@@ -75,7 +119,7 @@ def get_admin_projects_expected_output_response():
                 "workflow_type": "workflow_type_1",
                 "project_type": ProjectType.CRM.value,
                 "created_at": '2020-05-20 00:00:00',
-                "created_by": "user_1"
+                "created_by_id": 1
             }
         ],
         "total_count_of_projects": 1
@@ -107,7 +151,7 @@ def task_details_dto():
         state="state_1",
         issue_type=IssueType.BUG.value,
         created_at=datetime.datetime(2020, 5, 20, 0, 0),
-        created_by="user_1"
+        created_by_id=1
     )
     return task_details_dto
 
@@ -122,7 +166,7 @@ def create_task_expected_output():
         "state": "state_1",
         "issue_type": IssueType.BUG.value,
         "created_at": '2020-05-20 00:00:00',
-        "created_by": "user_1"
+        "created_by_id": 1
     }
     return response
 
@@ -142,7 +186,7 @@ def list_of_task_dtos():
             state="state_1",
             issue_type=IssueType.BUG.value,
             created_at=datetime.datetime(2020, 5, 20, 0, 0),
-            created_by="user_1"
+            created_by_id=1
         )
     ]
     return list_of_task_dtos
@@ -160,7 +204,7 @@ def get_tasks_expected_output():
                 "state": "state_1",
                 "issue_type": IssueType.BUG.value,
                 "created_at": '2020-05-20 00:00:00',
-                "created_by": "user_1"
+                "created_by_id": 1
             }
         ],
         "total_count_of_tasks": 1

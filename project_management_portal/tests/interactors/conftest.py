@@ -4,7 +4,9 @@ import pytest
 from project_management_portal.constants.enums import ProjectType, IssueType
 from project_management_portal.interactors.storages.dtos import (
     UserDto,
+    FinalUserDTO,
     ProjectDto,
+    FinalProjectDTO,
     WorkflowTypeDto,
     StateDto,
     TaskProjectDto,
@@ -14,11 +16,32 @@ from project_management_portal.interactors.storages.dtos import (
     TransitionDto,
     WorkflowDto,
     ChecklistDto,
-    ListOfChecklistsDto
+    ListOfChecklistsDto,
+    ListOfProjectsDto
 )
 
 
 ######################### create_project ####################################
+
+@pytest.fixture()
+@freeze_time("2020-05-20")
+def user_details_dtos():
+    user_details_dtos = [
+        FinalUserDTO(
+            name='user1',
+            user_id=1,
+            is_admin=True,
+            profile_pic_url='profile_pic_url1'
+        ),
+        FinalUserDTO(
+            name='user2',
+            user_id=2,
+            is_admin=False,
+            profile_pic_url='profile_pic_url2'
+        )
+    ]
+    return user_details_dtos
+
 
 @pytest.fixture()
 @freeze_time("2020-05-20")
@@ -29,10 +52,19 @@ def project_details_dto():
         description='The name of the project is project_management_portal',
         workflow_type='workflow_type_1',
         project_type=ProjectType.CRM.value,
-        created_by='user_1',
+        created_by_id=1,
         created_at=datetime.datetime(2020, 5, 20, 0, 0)
     )
     return project_details_dto
+
+
+@pytest.fixture()
+def final_project_details_dto(user_details_dtos, project_details_dto):
+    final_project_details_dto = FinalProjectDTO(
+        user_details_dtos=user_details_dtos,
+        project_details_dto=project_details_dto
+    )
+    return final_project_details_dto
 
 
 @pytest.fixture()
@@ -45,12 +77,97 @@ def create_project_expected_output():
         "workflow_type": "workflow_type_1",
         "project_type": ProjectType.CRM.value,
         "created_at": datetime.datetime(2020, 5, 20, 0, 0),
-        "created_by": "user_1"
+        "created_by_id": 1
     }
     return response
 
 
 ######################### get projects ####################################
+
+@pytest.fixture()
+@freeze_time("2020-05-20")
+def list_of_project_details_dtos():
+    list_of_project_details_dtos = [
+        ProjectDto(
+            project_id=1,
+            name='project_1',
+            description='The name of the project is project_1',
+            workflow_type='workflow_type_1',
+            project_type=ProjectType.CRM.value,
+            created_by_id=1,
+            created_at=datetime.datetime(2020, 5, 20, 0, 0)
+        ),
+        ProjectDto(
+            project_id=2,
+            name='project_2',
+            description='The name of the project is project_2',
+            workflow_type='workflow_type_1',
+            project_type=ProjectType.CRM.value,
+            created_by_id=1,
+            created_at=datetime.datetime(2020, 5, 20, 0, 0)
+        )
+    ]
+    return list_of_project_details_dtos
+
+
+@pytest.fixture()
+def final_list_project_details_dto(user_details_dtos, project_details_dto):
+    final_list_project_details_dto = [
+        FinalProjectDTO(
+            user_details_dtos=[
+                FinalUserDTO(
+                    name='user1',
+                    user_id=1,
+                    is_admin=True,
+                    profile_pic_url='profile_pic_url1'
+                ),
+                FinalUserDTO(
+                    name='user2',
+                    user_id=2,
+                    is_admin=False,
+                    profile_pic_url='profile_pic_url2'
+                )
+            ],
+            project_details_dto=ProjectDto(
+                project_id=1,
+                name='project_1',
+                description='The name of the project is project_1',
+                workflow_type='workflow_type_1',
+                project_type=ProjectType.CRM.value,
+                created_by_id=1,
+                created_at=datetime.datetime(2020, 5, 20, 0, 0)
+            )
+        ),
+        FinalProjectDTO(
+            user_details_dtos=[
+                FinalUserDTO(
+                    name='user1',
+                    user_id=1,
+                    is_admin=True,
+                    profile_pic_url='profile_pic_url1'
+                )
+            ],
+            project_details_dto=ProjectDto(
+                project_id=2,
+                name='project_2',
+                description='The name of the project is project_2',
+                workflow_type='workflow_type_1',
+                project_type=ProjectType.CRM.value,
+                created_by_id=1,
+                created_at=datetime.datetime(2020, 5, 20, 0, 0)
+            )
+        )
+    ]
+    return final_list_project_details_dto
+
+@pytest.fixture()
+def list_of_Projects_dto(final_list_project_details_dto):
+    list_of_Projects_dto = ListOfProjectsDto(
+        list_of_project_dtos=final_list_project_details_dto,
+        total_count_of_projects=2
+    )
+    return list_of_Projects_dto
+
 
 @pytest.fixture()
 @freeze_time("2020-05-20")
@@ -64,7 +181,7 @@ def get_projects_expected_output():
                 "workflow_type": "workflow_type_1",
                 "project_type": ProjectType.CRM.value,
                 "created_at": datetime.datetime(2020, 5, 20, 0, 0),
-                "created_by": "user_1"
+                "created_by_id": 1
             }
         ],
         "total_count_of_projects": 1

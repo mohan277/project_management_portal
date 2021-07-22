@@ -1,0 +1,101 @@
+{
+    "swagger": "2.0",
+    "host": "localhost:8080",
+    "basePath": "/api/project_management_portal_auth/",
+    "info": {
+        "version": "1.0.0",
+        "title": "Project Management Platform Auth",
+        "description": "A simple API to know the details of users"
+    },
+    "schemes": [
+        "https",
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "securityDefinitions": {
+        "oauth": {
+            "tokenUrl": "http://auth.ibtspl.com/oauth2/",
+            "flow": "password",
+            "scopes": {
+                "read": "read users",
+                "write": "create users",
+                "update": "update users",
+                "delete": "delete users"
+            },
+            "type": "oauth2"
+        }
+    },
+    "definitions": {},
+    "parameters": {
+        "UserLoginParameters": {
+            "name": "user_login_details",
+            "in": "body",
+            "description": "user login",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "username",
+                    "password"
+                ]
+            }
+        }
+    },
+    "responses": {
+        "UserLoginResponse": {
+            "description": "user logged in successfully",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "is_admin": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "access_token"
+                ]
+            }
+        }
+    },
+    "paths": {
+        "/login/v1/": {
+            "post": {
+                "operationId": "user_login",
+                "summary": "user login",
+                "description": "login by user",
+                "parameters": [{
+                    "$ref": "#/parameters/UserLoginParameters"
+                }],
+                "responses": {
+                    "200": {
+                        "$ref": "#/responses/UserLoginResponse"
+                    },
+                    "400": {
+                        "description": "user not registered"
+                    },
+                    "401": {
+                        "description": "invalid credentials"
+                    }
+                }
+            }
+        }
+    }
+}

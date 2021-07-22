@@ -1,5 +1,6 @@
 import pytest
-from unittest .mock import create_autospec
+from project_management_portal.interactors.storages.dtos import IsAdminDTO
+from unittest.mock import create_autospec, patch
 from django_swagger_utils.drf_server.exceptions import NotFound
 from project_management_portal.interactors.storages. \
     project_storage_interface import ProjectStorageInterface
@@ -9,56 +10,11 @@ from project_management_portal.interactors.presenters.presenter_interface \
     import PresenterInterface
 
 
-def test_create_project_with_invalid_workflow_type_id_and_users_list_raises_exception():
-
-    # Arrange
-    user_id = 1
-    assigned_to = [1, 2, 3]
-    name = "project_management_portal"
-    description = "The name of the project is Project Management Portal"
-    workflow_type = 1
-    project_type = "CRM"
-
-    storage = create_autospec(ProjectStorageInterface)
-    presenter = create_autospec(PresenterInterface)
-
-    interactor = CreateProjectInteractor(
-        storage=storage,
-        presenter=presenter
-    )
-
-
-    storage.is_valid_workflow_type_id.return_value = False
-    presenter.raise_invalid_workflow_type_id_exception.side_effect = NotFound
-
-    interactor = CreateProjectInteractor(
-        storage=storage,
-        presenter=presenter
-    )
-
-    # Act
-    with pytest.raises(NotFound):
-        interactor.create_project(
-            user_id=user_id,
-            assigned_to=assigned_to,
-            name=name,
-            description=description,
-            workflow_type=workflow_type,
-            project_type=project_type
-        )
-
-    # Assert
-    storage.is_valid_workflow_type_id.assert_called_once_with(
-        workflow_type=workflow_type
-    )
-    presenter.raise_invalid_workflow_type_id_exception.assert_called_once()
-
-
 def test_create_project_with_invalid_workflow_type_id_raises_exception():
 
     # Arrange
     user_id = 1
-    assigned_to = [1, 2, 3]
+    developers = [1, 2]
     name = "project_management_portal"
     description = "The name of the project is Project Management Portal"
     workflow_type = 1
@@ -66,30 +22,21 @@ def test_create_project_with_invalid_workflow_type_id_raises_exception():
 
     storage = create_autospec(ProjectStorageInterface)
     presenter = create_autospec(PresenterInterface)
-
-    interactor = CreateProjectInteractor(
-        storage=storage,
-        presenter=presenter
-    )
-
+    interactor = CreateProjectInteractor(storage=storage)
 
     storage.is_valid_workflow_type_id.return_value = False
     presenter.raise_invalid_workflow_type_id_exception.side_effect = NotFound
 
-    interactor = CreateProjectInteractor(
-        storage=storage,
-        presenter=presenter
-    )
-
     # Act
     with pytest.raises(NotFound):
-        interactor.create_project(
-            user_id=user_id,
-            assigned_to=assigned_to,
+        interactor.create_project_wrapper(
             name=name,
+            user_id=user_id,
+            presenter=presenter,
+            developers=developers,
             description=description,
-            workflow_type=workflow_type,
-            project_type=project_type
+            project_type=project_type,
+            workflow_type=workflow_type
         )
 
     # Assert
@@ -99,140 +46,97 @@ def test_create_project_with_invalid_workflow_type_id_raises_exception():
     presenter.raise_invalid_workflow_type_id_exception.assert_called_once()
 
 
-def test_create_project_with_invalid_admin_raises_exception():
+@patch(
+    'project_management_portal_auth.interfaces.service_interface.ServiceInterface.get_is_admin_valid_dto')
+def test_with_invalid_admin_raises_exception(get_is_admin_valid_dto):
 
     # Arrange
     user_id = 1
-    assigned_to = [1, 2, 3]
+    developers = [1, 2]
     name = "project_management_portal"
     description = "The name of the project is Project Management Portal"
     workflow_type = 1
     project_type = "CRM"
+    is_admin_valid_dto = IsAdminDTO(is_admin=False)
 
     storage = create_autospec(ProjectStorageInterface)
     presenter = create_autospec(PresenterInterface)
+    interactor = CreateProjectInteractor(storage=storage)
 
-    interactor = CreateProjectInteractor(
-        storage=storage,
-        presenter=presenter
-    )
-
-
-    storage.is_admin.return_value = False
+    is_admin_valid_dto = IsAdminDTO(is_admin=False)
+    get_is_admin_valid_dto.return_value = is_admin_valid_dto
     presenter.raise_invalid_admin_exception.side_effect = NotFound
-
-    interactor = CreateProjectInteractor(
-        storage=storage,
-        presenter=presenter
-    )
 
     # Act
     with pytest.raises(NotFound):
-        interactor.create_project(
-            user_id=user_id,
-            assigned_to=assigned_to,
+        interactor.create_project_wrapper(
             name=name,
+            user_id=user_id,
+            presenter=presenter,
+            developers=developers,
             description=description,
-            workflow_type=workflow_type,
-            project_type=project_type
+            project_type=project_type,
+            workflow_type=workflow_type
         )
 
     # Assert
-    storage.is_admin.assert_called_once_with(user_id=user_id)
+    get_is_admin_valid_dto.assert_called_once_with(user_id=user_id)
     presenter.raise_invalid_admin_exception.assert_called_once()
 
 
-def test_create_project_with_invalid_list_of_user_ids_raises_exception():
-
-    # Arrange
-    user_id = 1
-    assigned_to = [1, 2, 3]
-    name = "project_management_portal"
-    description = "The name of the project is Project Management Portal"
-    workflow_type = 1
-    project_type = "CRM"
-
-    storage = create_autospec(ProjectStorageInterface)
-    presenter = create_autospec(PresenterInterface)
-
-    interactor = CreateProjectInteractor(
-        storage=storage,
-        presenter=presenter
-    )
-
-    storage.is_valid_user_ids_list.return_value = False
-    presenter.raise_invalid_list_of_user_ids_exception.side_effect = NotFound
-
-    interactor = CreateProjectInteractor(
-        storage=storage,
-        presenter=presenter
-    )
-
-    # Act
-    with pytest.raises(NotFound):
-        interactor.create_project(
-            user_id=user_id,
-            assigned_to=assigned_to,
-            name=name,
-            description=description,
-            workflow_type=workflow_type,
-            project_type=project_type
-        )
-
-    # Assert
-    storage.is_valid_user_ids_list.assert_called_once_with(
-        assigned_to=assigned_to
-    )
-    presenter.raise_invalid_list_of_user_ids_exception.assert_called_once()
-
-
+@patch(
+    'project_management_portal_auth.interfaces.service_interface.ServiceInterface.get_user_dtos')
+@patch(
+    'project_management_portal_auth.interfaces.service_interface.ServiceInterface.get_is_admin_valid_dto')
 def test_create_project_with_valid_details_returns_project_details(
-    project_details_dto, create_project_expected_output):
+    get_is_admin_valid_dto, get_user_dtos, final_project_details_dto, user_details_dtos, \
+        project_details_dto, create_project_expected_output):
 
     # Arrange
     user_id = 1
-    assigned_to = [1, 2, 3]
+    developers = [1, 2]
     name = "project_management_portal"
     description = "The name of the project is Project Management Portal"
     workflow_type = 1
     project_type = "CRM"
+    is_admin_valid_dto = IsAdminDTO(is_admin=True)
 
     storage = create_autospec(ProjectStorageInterface)
     presenter = create_autospec(PresenterInterface)
+    interactor = CreateProjectInteractor(storage=storage)
 
-    interactor = CreateProjectInteractor(
-        storage=storage,
-        presenter=presenter
-    )
-
+    get_is_admin_valid_dto.return_value = is_admin_valid_dto
+    get_user_dtos.return_value = user_details_dtos
     storage.is_valid_workflow_type_id.return_value = True
-    storage.is_valid_user_ids_list.return_value = True
     storage.create_project.return_value = project_details_dto
     presenter.get_create_project_response. \
         return_value = create_project_expected_output
 
     # Act
-    response = interactor.create_project(
+    response = interactor.create_project_wrapper(
         name=name,
         user_id=user_id,
-        assigned_to=assigned_to,
+        presenter=presenter,
+        developers=developers,
         description=description,
-        workflow_type=workflow_type,
-        project_type=project_type
+        project_type=project_type,
+        workflow_type=workflow_type
     )
 
     # Assert
+    get_is_admin_valid_dto.assert_called_once_with(user_id=user_id)
+    get_user_dtos.assert_called_once_with(user_ids=developers)
     storage.create_project.assert_called_once_with(
         name=name,
         user_id=user_id,
-        assigned_to=assigned_to,
+        developers=developers,
         description=description,
-        workflow_type=workflow_type,
-        project_type=project_type
+        project_type=project_type,
+        workflow_type=workflow_type
     )
 
     presenter.get_create_project_response.assert_called_once_with(
-        project_details_dto=project_details_dto
+        project_details_dto=final_project_details_dto
     )
 
     assert response == create_project_expected_output
